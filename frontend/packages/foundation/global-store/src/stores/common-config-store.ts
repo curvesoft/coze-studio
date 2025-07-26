@@ -28,7 +28,7 @@ interface ICommonConfig {
   homeBannerTask?: Array<HomeBannerDisplay>;
   quickStart?: Array<QuickStartConfig>;
   oceanProjectSpaces?: Array<string>;
-  /** 开源版暂不支持该功能 */
+  /** 即将支持，敬请期待 */
   douyinAvatarSpaces?: Array<string>;
 }
 export interface ICommonConfigStoreState {

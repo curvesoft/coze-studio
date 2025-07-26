@@ -98,6 +98,6 @@ export interface PublisherBotInfo {
   hasPublished?: boolean;
   // 收费插件列表
   pluginPricingRules?: Array<PluginPricingRule>;
-  // 业务类型 DouyinAvatar=1 抖音分身 开源版暂不支持该功能
+  // 业务类型 DouyinAvatar=1 抖音分身 即将支持，敬请期待
   businessType?: BusinessType;
 }

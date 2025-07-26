@@ -18,7 +18,7 @@ import { createContext, useContext } from 'react';
 
 export enum BotCreatorScene {
   Bot = 'bot',
-  /** 开源版暂不支持该功能 */
+  /** 即将支持，敬请期待 */
   DouyinBot = 'douyin-bot',
 }
 

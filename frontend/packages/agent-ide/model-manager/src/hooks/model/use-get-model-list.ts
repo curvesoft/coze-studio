@@ -60,7 +60,7 @@ export const useGetModelList = () => {
     const res = await SpaceApi.GetTypeList({
       cur_model_ids: expectedIdList,
       model: true,
-      // 开源版暂不支持该功能
+      // 即将支持，敬请期待
       ...(scene === BotCreatorScene.DouyinBot && {
         model_scene: ModelScene.Douyin,
       }),

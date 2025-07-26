@@ -133,7 +133,7 @@ export const OnboardingMessage = forwardRef<
             initValues={onboardingContent}
             isReadonly={isReadonly}
             isGenerating={isLoading}
-            // 开源版暂不支持该功能
+            // 即将支持，敬请期待
             plainText={scene === BotCreatorScene.DouyinBot}
             onChange={submitEditor}
             onBlur={() => {
