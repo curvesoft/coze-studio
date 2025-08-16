@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import { useRef, useState } from 'react';
 
 import { I18n } from '@coze-arch/i18n';
-import { type FileItem, type UploadProps } from '@coze-arch/bot-semi/Upload';
-import { FileBizType } from '@coze-arch/bot-api/developer_api';
 import { IconCozEdit } from '@coze-arch/coze-design/icons';
 import { CozAvatar, Toast, Upload } from '@coze-arch/coze-design';
+import { type FileItem, type UploadProps } from '@coze-arch/bot-semi/Upload';
+import { FileBizType } from '@coze-arch/bot-api/developer_api';
 
 import { EmptyRoleAvatar } from '../../empty-role-avatar';
 import customUploadRequest from './utils/custom-upload-request';
@@ -44,7 +44,7 @@ interface PackageUploadProps {
     contentNotLegalText?: string;
   };
   /**
-   * 自动生成的最大候选数量
+   * Maximum number of candidates automatically generated
    * @default 5
    */
   maxCandidateCount?: number;
@@ -56,7 +56,7 @@ interface PackageUploadProps {
 }
 
 export const RoleAvatarUpload = (props: PackageUploadProps) => {
-  //   业务
+  //   business
   const {
     onChange,
     value,
@@ -108,7 +108,7 @@ export const RoleAvatarUpload = (props: PackageUploadProps) => {
         maxSize={2 * 1024}
         onSizeError={() => {
           Toast.error({
-            // starling 切换
+            // Starling toggle
             content: I18n.t(
               'dataset_upload_image_warning',
               {},
@@ -139,7 +139,7 @@ export const RoleAvatarUpload = (props: PackageUploadProps) => {
         </div>
       </Upload>
 
-      {/* The community version does not support AI-generated avatar, for future expansion */}
+      {/* will support soon */}
       {!disabled && !IS_OPEN_SOURCE ? (
         <AutoGenerate
           generateInfo={generateInfo}

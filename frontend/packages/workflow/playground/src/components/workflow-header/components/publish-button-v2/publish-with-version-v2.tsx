@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import React, { useState, useRef, useEffect } from 'react';
 
 import semver from 'semver';
@@ -106,7 +106,7 @@ const VersionForm: React.FC<{
 
       // eslint-disable-next-line @coze-arch/no-empty-catch
     } catch {
-      // 校验错误无须其他处理
+      // Validation error requires no additional processing
     }
   };
 
@@ -245,7 +245,7 @@ const VersionForm: React.FC<{
           ]}
         />
 
-        {/* The community version does not currently support testset, for future expansion */}
+        {/* will support soon */}
         {!IS_OPEN_SOURCE && <TestSetSelect onSelect={handleTestSetSelect} />}
 
         {renderBtn()}

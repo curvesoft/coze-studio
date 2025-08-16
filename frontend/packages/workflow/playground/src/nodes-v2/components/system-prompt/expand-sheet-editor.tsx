@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import { type FC, useMemo } from 'react';
 
 import { useGlobalVariableServiceState } from '@coze-workflow/variable';
@@ -102,7 +102,7 @@ export const ExpandSheetEditor: FC<ExpandSheetEditorProps> = props => {
   const getConversationId = () => '';
   const getPromptContextInfo = useMemo(
     () => () => ({
-      // workflow 场景下 bot_id 不用传
+      // No need to pass bot_id workflow scenario
       botId: '',
       name,
       description: desc,
@@ -150,7 +150,7 @@ export const ExpandSheetEditor: FC<ExpandSheetEditorProps> = props => {
               ></Button>
             </Tooltip>
 
-            {/* The community version does not support the AI-generated system prompt feature, for future expansion */}
+            {/* will support soon */}
             {IS_OPEN_SOURCE ? null : (
               <NLPromptButton disabled={props?.readonly} onlyIcon />
             )}

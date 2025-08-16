@@ -28,7 +28,7 @@ const readBlockList = () =>
 
 /** @type {(import('eslint').Linter.Config)[]} */
 module.exports = [
-  // NOTE: 不能和下一项配置合并
+  // NOTE: Cannot be merged with the next configuration
   {
     ignores: [
       '**/*.d.ts',
@@ -42,6 +42,7 @@ module.exports = [
       '**/es/**',
       '**/lib/**',
       '**/.codebase/**',
+      '**/.github/**',
       '**/.changeset/**',
       '**/config/**',
       '**/common/scripts/**',
@@ -67,7 +68,7 @@ module.exports = [
   ...require('@coze-arch/eslint-plugin').configs.recommended,
   require('@coze-arch/eslint-plugin/zustand').configs.recommended,
   {
-    files: ['**/*.?(m|c)?(j|t)s?(x)'], // 排除规则对package.json生效
+    files: ['**/*.?(m|c)?(j|t)s?(x)'], // Exclusion rules take effect for package.json
     plugins: {
       prettier: require('eslint-plugin-prettier'),
       '@babel': require('@babel/eslint-plugin'),

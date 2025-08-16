@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 
@@ -32,8 +32,8 @@ import css from './generate-button.module.less';
 interface AIGenerateButtonProps {
   schema?: TestFormSchema;
   /**
-   * flow: 流程
-   * node: 单节点
+   * Flow: Flow
+   * Node: Single Node
    */
   type: 'flow' | 'node';
   onGenerate: (data: any, cover: boolean) => void;
@@ -83,7 +83,7 @@ export const AIGenerateButton: React.FC<AIGenerateButtonProps> = ({
     i => i.name === FieldName.Node,
   );
 
-  // The community version does not support AI-generated test-run inputs, for future expansion
+  // will support soon
   if (IS_OPEN_SOURCE) {
     return null;
   }

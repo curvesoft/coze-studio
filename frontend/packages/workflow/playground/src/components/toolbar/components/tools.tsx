@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import { useRef, type RefObject } from 'react';
 
 import cls from 'classnames';
@@ -66,7 +66,7 @@ export const Tools = (props: ITool) => {
       </div>
       <div className={cls(css['tools-section'], css['test-run'])}>
         {isChatflow ? <RoleButton /> : null}
-        {/* 运维平台不需要调试和试运行，只需要查看信息排查问题 */}
+        {/* The operation and maintenance platform does not need debugging and practice running, just need to view the information to troubleshoot problems */}
         {IS_BOT_OP ? (
           <OpenTraceButton />
         ) : (
@@ -78,7 +78,7 @@ export const Tools = (props: ITool) => {
                 margin={3}
               />
             ) : null}
-            {/* The community version does not currently support trace, for future expansion  */}
+            {/* will support soon */}
             {!IS_OPEN_SOURCE && <OpenTraceButton />}
             <StartTestRunButton />
           </>

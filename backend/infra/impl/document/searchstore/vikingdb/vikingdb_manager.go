@@ -65,6 +65,10 @@ type VikingEmbeddingConfig struct {
 	BuiltinEmbedding embedding.Embedder
 }
 
+func NewVikingDBService(host string, region string, ak string, sk string, scheme string) *vikingdb.VikingDBService {
+	return vikingdb.NewVikingDBService(host, region, ak, sk, scheme)
+}
+
 func NewManager(config *ManagerConfig) (searchstore.Manager, error) {
 	if config.Service == nil {
 		return nil, fmt.Errorf("[NewManager] vikingdb service is nil")
@@ -256,9 +260,9 @@ func (m *manager) mapFields(srcFields []*searchstore.Field) ([]vikingdb.Field, [
 				return nil, nil, fmt.Errorf("[mapFields] currently only support text field indexing, field=%s", srcField.Name)
 			}
 			if embConfig.UseVikingEmbedding {
-				vt := vikingdb.NewVectorizeTuple().SetDense(m.newVectorizeModelConf(srcField.Name))
+				vt := vikingdb.NewVectorizeTuple().SetDense(m.newVectorizeModelConf(srcField.Name, false))
 				if embConfig.EnableHybrid {
-					vt = vt.SetSparse(m.newVectorizeModelConf(srcField.Name))
+					vt = vt.SetSparse(m.newVectorizeModelConf(srcField.Name, true))
 				}
 				vectorizeOpts = append(vectorizeOpts, vt)
 			} else {
@@ -310,12 +314,14 @@ func (m *manager) mapFields(srcFields []*searchstore.Field) ([]vikingdb.Field, [
 	return dstFields, vectorizeOpts, nil
 }
 
-func (m *manager) newVectorizeModelConf(fieldName string) *vikingdb.VectorizeModelConf {
+func (m *manager) newVectorizeModelConf(fieldName string, isSparse bool) *vikingdb.VectorizeModelConf {
 	embConfig := m.config.EmbeddingConfig
 	vmc := vikingdb.NewVectorizeModelConf().
 		SetTextField(fieldName).
-		SetModelName(string(embConfig.ModelName)).
-		SetDim(m.getDims())
+		SetModelName(string(embConfig.ModelName))
+	if !isSparse {
+		vmc = vmc.SetDim(m.getDims())
+	}
 	if embConfig.ModelVersion != nil {
 		vmc = vmc.SetModelVersion(ptr.From(embConfig.ModelVersion))
 	}

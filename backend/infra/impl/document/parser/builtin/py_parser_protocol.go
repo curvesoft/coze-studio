@@ -73,15 +73,15 @@ func (p *pyPDFTableIterator) NextRow() (row []string, end bool, err error) {
 	return row, false, nil
 }
 
-func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR, pyPath, scriptPath string) parseFn {
+func ParseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR, pyPath, scriptPath string) ParseFn {
 	return func(ctx context.Context, reader io.Reader, opts ...parser.Option) (docs []*schema.Document, err error) {
 		pr, pw, err := os.Pipe()
 		if err != nil {
-			return nil, fmt.Errorf("[parseByPython] create rpipe failed, %w", err)
+			return nil, fmt.Errorf("[ParseByPython] create rpipe failed, %w", err)
 		}
 		r, w, err := os.Pipe()
 		if err != nil {
-			return nil, fmt.Errorf("[parseByPython] create pipe failed: %w", err)
+			return nil, fmt.Errorf("[ParseByPython] create pipe failed: %w", err)
 		}
 		options := parser.GetCommonOptions(&parser.Options{ExtraMeta: map[string]any{}}, opts...)
 
@@ -91,13 +91,13 @@ func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR
 			FilterPages:   config.ParsingStrategy.FilterPages,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("[parseByPython] create parse request failed, %w", err)
+			return nil, fmt.Errorf("[ParseByPython] create parse request failed, %w", err)
 		}
 		if _, err = pw.Write(reqb); err != nil {
-			return nil, fmt.Errorf("[parseByPython] write parse request bytes failed, %w", err)
+			return nil, fmt.Errorf("[ParseByPython] write parse request bytes failed, %w", err)
 		}
 		if err = pw.Close(); err != nil {
-			return nil, fmt.Errorf("[parseByPython] close write request pipe failed, %w", err)
+			return nil, fmt.Errorf("[ParseByPython] close write request pipe failed, %w", err)
 		}
 
 		cmd := exec.Command(pyPath, scriptPath)
@@ -105,31 +105,31 @@ func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR
 		cmd.Stdout = os.Stdout
 		cmd.ExtraFiles = []*os.File{w, pr}
 		if err = cmd.Start(); err != nil {
-			return nil, fmt.Errorf("[parseByPython] failed to start Python script: %w", err)
+			return nil, fmt.Errorf("[ParseByPython] failed to start Python script: %w", err)
 		}
 		if err = w.Close(); err != nil {
-			return nil, fmt.Errorf("[parseByPython] failed to close write pipe: %w", err)
+			return nil, fmt.Errorf("[ParseByPython] failed to close write pipe: %w", err)
 		}
 
 		result := &pyParseResult{}
 
 		if err = json.NewDecoder(r).Decode(result); err != nil {
-			return nil, fmt.Errorf("[parseByPython] failed to decode result: %w", err)
+			return nil, fmt.Errorf("[ParseByPython] failed to decode result: %w", err)
 		}
 		if err = cmd.Wait(); err != nil {
-			return nil, fmt.Errorf("[parseByPython] cmd wait err: %w", err)
+			return nil, fmt.Errorf("[ParseByPython] cmd wait err: %w", err)
 		}
 
 		if result.Error != "" {
-			return nil, fmt.Errorf("[parseByPython] python execution failed: %s", result.Error)
+			return nil, fmt.Errorf("[ParseByPython] python execution failed: %s", result.Error)
 		}
 
 		for i, item := range result.Content {
 			switch item.Type {
 			case contentTypeText:
-				partDocs, err := chunkCustom(ctx, item.Content, config, opts...)
+				partDocs, err := ChunkCustom(ctx, item.Content, config, opts...)
 				if err != nil {
-					return nil, fmt.Errorf("[parseByPython] chunk text failed, %w", err)
+					return nil, fmt.Errorf("[ParseByPython] chunk text failed, %w", err)
 				}
 				docs = append(docs, partDocs...)
 			case contentTypeImage:
@@ -138,9 +138,9 @@ func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR
 				}
 				image, err := base64.StdEncoding.DecodeString(item.Content)
 				if err != nil {
-					return nil, fmt.Errorf("[parseByPython] decode image failed, %w", err)
+					return nil, fmt.Errorf("[ParseByPython] decode image failed, %w", err)
 				}
-				imgSrc, err := putImageObject(ctx, storage, "png", getCreatorIDFromExtraMeta(options.ExtraMeta), image)
+				imgSrc, err := PutImageObject(ctx, storage, "png", GetCreatorIDFromExtraMeta(options.ExtraMeta), image)
 				if err != nil {
 					return nil, err
 				}
@@ -148,7 +148,7 @@ func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR
 				if config.ParsingStrategy.ImageOCR && ocr != nil {
 					texts, err := ocr.FromBase64(ctx, item.Content)
 					if err != nil {
-						return nil, fmt.Errorf("[parseByPython] FromBase64 failed, %w", err)
+						return nil, fmt.Errorf("[ParseByPython] FromBase64 failed, %w", err)
 					}
 					label += strings.Join(texts, "\n")
 				}
@@ -163,7 +163,7 @@ func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR
 					}
 					docs = append(docs, doc)
 				} else {
-					// TODO: 这里有点问题，img label 可能被较短的 chunk size 截断
+					// TODO: There is a problem here, the img label may be truncated by the shorter chunk size
 					result.Content[i+1].Content = label + result.Content[i+1].Content
 				}
 			case contentTypeTable:
@@ -181,15 +181,15 @@ func parseByPython(config *contract.Config, storage storage.Storage, ocr ocr.OCR
 					ChunkingStrategy: config.ChunkingStrategy,
 				}, opts...)
 				if err != nil {
-					return nil, fmt.Errorf("[parseByPython] parse table failed, %w", err)
+					return nil, fmt.Errorf("[ParseByPython] parse table failed, %w", err)
 				}
 				fmtTableDocs, err := formatTablesInDocument(rawTableDocs)
 				if err != nil {
-					return nil, fmt.Errorf("[parseByPython] format table failed, %w", err)
+					return nil, fmt.Errorf("[ParseByPython] format table failed, %w", err)
 				}
 				docs = append(docs, fmtTableDocs...)
 			default:
-				return nil, fmt.Errorf("[parseByPython] invalid content type: %s", item.Type)
+				return nil, fmt.Errorf("[ParseByPython] invalid content type: %s", item.Type)
 			}
 		}
 
@@ -249,6 +249,11 @@ func formatTablesInDocument(input []*schema.Document) (output []*schema.Document
 				values = append(values, col.Name)
 			}
 			write(values)
+			if colOnly, err := document.GetDocumentColumnsOnly(doc); err != nil {
+				return nil, err
+			} else if colOnly {
+				break
+			}
 		}
 
 		data, err := document.GetDocumentColumnData(doc)

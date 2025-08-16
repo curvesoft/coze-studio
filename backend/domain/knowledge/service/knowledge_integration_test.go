@@ -145,7 +145,7 @@ func (suite *KnowledgeTestSuite) SetupSuite() {
 		panic(err)
 	}
 
-	emb, err := hembed.NewEmbedding(embEndpoint)
+	emb, err := hembed.NewEmbedding(embEndpoint, 1024, 1)
 	if err != nil {
 		panic(err)
 	}
@@ -178,7 +178,7 @@ func (suite *KnowledgeTestSuite) SetupSuite() {
 
 	suite.handler = knowledgeEventHandler
 
-	err = eventbus.RegisterConsumer(rmqEndpoint, consts.RMQTopicKnowledge, consts.RMQConsumeGroupKnowledge, suite)
+	err = eventbus.DefaultSVC().RegisterConsumer(rmqEndpoint, consts.RMQTopicKnowledge, consts.RMQConsumeGroupKnowledge, suite)
 	if err != nil {
 		panic(err)
 	}

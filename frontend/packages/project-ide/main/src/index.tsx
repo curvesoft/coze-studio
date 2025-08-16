@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import 'reflect-metadata';
 import { useNavigate } from 'react-router-dom';
 import React, { useMemo, memo } from 'react';
@@ -73,7 +73,7 @@ const ProjectIDE: React.FC<ProjectIDEProps> = memo(
       () => ({
         view: {
           widgetRegistries: [
-            // The community version does not currently support conversation management in project, for future expansion
+            // will support soon
             ...(IS_OPEN_SOURCE ? [] : [ConversationRegistry]),
             WorkflowWidgetRegistry,
             DatabaseWidgetRegistry,
@@ -106,7 +106,7 @@ const ProjectIDE: React.FC<ProjectIDEProps> = memo(
       [spaceId, projectId, version, navigate],
     );
     if (!canView) {
-      // 无法查看跳转到兜底报错页
+      // Unable to view Jump to the bottom cover error page
       throw new Error('can not view');
     }
 

@@ -26,10 +26,10 @@ import (
 
 	"github.com/bytedance/sonic"
 
-	modelCommon "github.com/coze-dev/coze-studio/backend/api/model/common"
 	model "github.com/coze-dev/coze-studio/backend/api/model/crossdomain/knowledge"
-	"github.com/coze-dev/coze-studio/backend/api/model/flow/dataengine/dataset"
-	"github.com/coze-dev/coze-studio/backend/api/model/knowledge/document"
+	dataset "github.com/coze-dev/coze-studio/backend/api/model/data/knowledge"
+	document "github.com/coze-dev/coze-studio/backend/api/model/data/knowledge"
+	modelCommon "github.com/coze-dev/coze-studio/backend/api/model/data/knowledge"
 	resource "github.com/coze-dev/coze-studio/backend/api/model/resource/common"
 	"github.com/coze-dev/coze-studio/backend/application/base/ctxutil"
 	"github.com/coze-dev/coze-studio/backend/application/search"
@@ -438,7 +438,7 @@ func (k *KnowledgeApplicationService) GetDocumentProgress(ctx context.Context, r
 			DocumentID:     domainResp.ProgressList[i].ID,
 			Progress:       int32(domainResp.ProgressList[i].Progress),
 			Status:         convertDocumentStatus2Model(domainResp.ProgressList[i].Status),
-			StatusDescript: ptr.Of(convertDocumentStatus2Model(domainResp.ProgressList[i].Status).String()),
+			StatusDescript: &domainResp.ProgressList[i].StatusMsg,
 			DocumentName:   domainResp.ProgressList[i].Name,
 			RemainingTime:  &domainResp.ProgressList[i].RemainingSec,
 			Size:           &domainResp.ProgressList[i].Size,

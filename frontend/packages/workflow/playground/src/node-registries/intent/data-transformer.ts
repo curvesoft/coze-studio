@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import { get, isNil, omit } from 'lodash-es';
 import { type NodeFormContext } from '@flowgram-adapter/free-layout-editor';
 import { variableUtils } from '@coze-workflow/variable';
@@ -28,7 +28,7 @@ import { type FormData } from './types';
 import { getDefaultOutputs } from './constants';
 
 /**
- * 节点后端数据 -> 前端表单数据
+ * Node Backend Data - > Frontend Form Data
  */
 export const transformOnInit = (
   value: NodeDataDTO,
@@ -44,7 +44,7 @@ export const transformOnInit = (
 
   const { models } = playgroundContext;
 
-  // 初次拖入画布时：从后端返回值里，解析出来默认值。
+  // When first dragged into the canvas: Parse out the default value from the backend return value.
   if (!llmParam) {
     llmParam = getDefaultLLMParams(models);
   }
@@ -54,7 +54,7 @@ export const transformOnInit = (
   const inputParameters = get(inputs, 'inputParameters', []);
 
   // - If it is a new node, the default is fast mode, otherwise it is determined according to the backend return value (if there is no backend mode field, it means it is historical data, then it is standard mode)
-  // - The community version does not support the fast mode of intent recognition for future expansion
+  // - will support soon
   const intentModeInInit =
     isNewCreateInInit && !IS_OPEN_SOURCE
       ? INTENT_NODE_MODE.MINIMAL
@@ -74,7 +74,7 @@ export const transformOnInit = (
       'chatHistoryRound',
     ]) as { [k: string]: unknown },
 
-    // 开源版本只支持标准模式
+    // The open-source version only supports standard mode
     intentMode: intentModeInInit,
 
     intents: isMinimalMode ? emptyIntent : intentsValue,
@@ -96,7 +96,7 @@ export const transformOnInit = (
 };
 
 /**
- * 前端表单数据 -> 节点后端数据
+ * Front-end form data - > node back-end data
  * @param value
  * @returns
  */
@@ -158,10 +158,10 @@ export const transformOnSubmit = (
           },
         ),
 
-        // 如果是工作流，提交时默认关闭历史记录，对话流则按用户实际值提交
+        // If it is a workflow, the history is closed by default when submitting, and the dialog flow is submitted according to the actual value of the user.
         enableChatHistory: isChatflow ? Boolean(enableChatHistory) : false,
 
-        // 历史记录轮数
+        // History rounds
         chatHistoryRound,
       },
       intents: intentMode === INTENT_NODE_MODE.MINIMAL ? quickIntents : intents,

@@ -241,6 +241,12 @@ func (dao *MessageDAO) messageDO2PO(ctx context.Context, msgDo *entity.Message) 
 		UpdatedAt:        time.Now().UnixMilli(),
 		ReasoningContent: msgDo.ReasoningContent,
 	}
+	if msgDo.CreatedAt > 0 {
+		msgPO.CreatedAt = msgDo.CreatedAt
+	}
+	if msgDo.UpdatedAt > 0 {
+		msgPO.UpdatedAt = msgDo.UpdatedAt
+	}
 
 	if msgDo.ModelContent != "" {
 		msgPO.ModelContent = msgDo.ModelContent
@@ -300,7 +306,7 @@ func (dao *MessageDAO) buildModelContent(msgDO *entity.Message) (string, error) 
 				URL: contentData.FileData[0].Url,
 			}
 		case message.InputTypeAudio:
-			one.Type = schema.ChatMessagePartTypeFileURL
+			one.Type = schema.ChatMessagePartTypeAudioURL
 			one.AudioURL = &schema.ChatMessageAudioURL{
 				URL: contentData.FileData[0].Url,
 				URI: contentData.FileData[0].URI,
@@ -309,10 +315,12 @@ func (dao *MessageDAO) buildModelContent(msgDO *entity.Message) (string, error) 
 		multiContent = append(multiContent, one)
 	}
 	if len(multiContent) > 0 {
-		multiContent = append(multiContent, schema.ChatMessagePart{
-			Type: schema.ChatMessagePartTypeText,
-			Text: msgDO.Content,
-		})
+		if len(msgDO.Content) > 0 {
+			multiContent = append(multiContent, schema.ChatMessagePart{
+				Type: schema.ChatMessagePartTypeText,
+				Text: msgDO.Content,
+			})
+		}
 	} else {
 		modelContentObj.Content = msgDO.Content
 	}

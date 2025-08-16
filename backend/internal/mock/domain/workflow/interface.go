@@ -13,10 +13,12 @@ import (
 	context "context"
 	reflect "reflect"
 
+	model "github.com/cloudwego/eino/components/model"
 	compose "github.com/cloudwego/eino/compose"
 	schema "github.com/cloudwego/eino/schema"
-	workflow "github.com/coze-dev/coze-studio/backend/api/model/ocean/cloud/workflow"
-	workflow0 "github.com/coze-dev/coze-studio/backend/domain/workflow"
+	workflow "github.com/coze-dev/coze-studio/backend/api/model/crossdomain/workflow"
+	workflow0 "github.com/coze-dev/coze-studio/backend/api/model/workflow"
+	workflow1 "github.com/coze-dev/coze-studio/backend/domain/workflow"
 	entity "github.com/coze-dev/coze-studio/backend/domain/workflow/entity"
 	vo "github.com/coze-dev/coze-studio/backend/domain/workflow/entity/vo"
 	gomock "go.uber.org/mock/gomock"
@@ -47,7 +49,7 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 }
 
 // AsyncExecute mocks base method.
-func (m *MockService) AsyncExecute(ctx context.Context, config vo.ExecuteConfig, input map[string]any) (int64, error) {
+func (m *MockService) AsyncExecute(ctx context.Context, config workflow.ExecuteConfig, input map[string]any) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AsyncExecute", ctx, config, input)
 	ret0, _ := ret[0].(int64)
@@ -62,7 +64,7 @@ func (mr *MockServiceMockRecorder) AsyncExecute(ctx, config, input any) *gomock.
 }
 
 // AsyncExecuteNode mocks base method.
-func (m *MockService) AsyncExecuteNode(ctx context.Context, nodeID string, config vo.ExecuteConfig, input map[string]any) (int64, error) {
+func (m *MockService) AsyncExecuteNode(ctx context.Context, nodeID string, config workflow.ExecuteConfig, input map[string]any) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AsyncExecuteNode", ctx, nodeID, config, input)
 	ret0, _ := ret[0].(int64)
@@ -77,7 +79,7 @@ func (mr *MockServiceMockRecorder) AsyncExecuteNode(ctx, nodeID, config, input a
 }
 
 // AsyncResume mocks base method.
-func (m *MockService) AsyncResume(ctx context.Context, req *entity.ResumeRequest, config vo.ExecuteConfig) error {
+func (m *MockService) AsyncResume(ctx context.Context, req *entity.ResumeRequest, config workflow.ExecuteConfig) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AsyncResume", ctx, req, config)
 	ret0, _ := ret[0].(error)
@@ -120,13 +122,12 @@ func (mr *MockServiceMockRecorder) CopyWorkflow(ctx, workflowID, policy any) *go
 }
 
 // CopyWorkflowFromAppToLibrary mocks base method.
-func (m *MockService) CopyWorkflowFromAppToLibrary(ctx context.Context, workflowID, appID int64, related vo.ExternalResourceRelated) (map[int64]entity.IDVersionPair, []*vo.ValidateIssue, error) {
+func (m *MockService) CopyWorkflowFromAppToLibrary(ctx context.Context, workflowID, appID int64, related vo.ExternalResourceRelated) (*entity.CopyWorkflowFromAppToLibraryResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CopyWorkflowFromAppToLibrary", ctx, workflowID, appID, related)
-	ret0, _ := ret[0].(map[int64]entity.IDVersionPair)
-	ret1, _ := ret[1].([]*vo.ValidateIssue)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
+	ret0, _ := ret[0].(*entity.CopyWorkflowFromAppToLibraryResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CopyWorkflowFromAppToLibrary indicates an expected call of CopyWorkflowFromAppToLibrary.
@@ -151,11 +152,12 @@ func (mr *MockServiceMockRecorder) Create(ctx, meta any) *gomock.Call {
 }
 
 // Delete mocks base method.
-func (m *MockService) Delete(ctx context.Context, policy *vo.DeletePolicy) error {
+func (m *MockService) Delete(ctx context.Context, policy *vo.DeletePolicy) ([]int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", ctx, policy)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].([]int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Delete indicates an expected call of Delete.
@@ -165,11 +167,12 @@ func (mr *MockServiceMockRecorder) Delete(ctx, policy any) *gomock.Call {
 }
 
 // DuplicateWorkflowsByAppID mocks base method.
-func (m *MockService) DuplicateWorkflowsByAppID(ctx context.Context, sourceAPPID, targetAppID int64, related vo.ExternalResourceRelated) error {
+func (m *MockService) DuplicateWorkflowsByAppID(ctx context.Context, sourceAPPID, targetAppID int64, related vo.ExternalResourceRelated) ([]*entity.Workflow, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DuplicateWorkflowsByAppID", ctx, sourceAPPID, targetAppID, related)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].([]*entity.Workflow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DuplicateWorkflowsByAppID indicates an expected call of DuplicateWorkflowsByAppID.
@@ -378,7 +381,7 @@ func (mr *MockServiceMockRecorder) Save(ctx, id, arg2 any) *gomock.Call {
 }
 
 // StreamExecute mocks base method.
-func (m *MockService) StreamExecute(ctx context.Context, config vo.ExecuteConfig, input map[string]any) (*schema.StreamReader[*entity.Message], error) {
+func (m *MockService) StreamExecute(ctx context.Context, config workflow.ExecuteConfig, input map[string]any) (*schema.StreamReader[*entity.Message], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StreamExecute", ctx, config, input)
 	ret0, _ := ret[0].(*schema.StreamReader[*entity.Message])
@@ -393,7 +396,7 @@ func (mr *MockServiceMockRecorder) StreamExecute(ctx, config, input any) *gomock
 }
 
 // StreamResume mocks base method.
-func (m *MockService) StreamResume(ctx context.Context, req *entity.ResumeRequest, config vo.ExecuteConfig) (*schema.StreamReader[*entity.Message], error) {
+func (m *MockService) StreamResume(ctx context.Context, req *entity.ResumeRequest, config workflow.ExecuteConfig) (*schema.StreamReader[*entity.Message], error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StreamResume", ctx, req, config)
 	ret0, _ := ret[0].(*schema.StreamReader[*entity.Message])
@@ -408,7 +411,7 @@ func (mr *MockServiceMockRecorder) StreamResume(ctx, req, config any) *gomock.Ca
 }
 
 // SyncExecute mocks base method.
-func (m *MockService) SyncExecute(ctx context.Context, config vo.ExecuteConfig, input map[string]any) (*entity.WorkflowExecution, vo.TerminatePlan, error) {
+func (m *MockService) SyncExecute(ctx context.Context, config workflow.ExecuteConfig, input map[string]any) (*entity.WorkflowExecution, vo.TerminatePlan, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncExecute", ctx, config, input)
 	ret0, _ := ret[0].(*entity.WorkflowExecution)
@@ -452,10 +455,10 @@ func (mr *MockServiceMockRecorder) UpdateMeta(ctx, id, metaUpdate any) *gomock.C
 }
 
 // ValidateTree mocks base method.
-func (m *MockService) ValidateTree(ctx context.Context, id int64, validateConfig vo.ValidateTreeConfig) ([]*workflow.ValidateTreeInfo, error) {
+func (m *MockService) ValidateTree(ctx context.Context, id int64, validateConfig vo.ValidateTreeConfig) ([]*workflow0.ValidateTreeInfo, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ValidateTree", ctx, id, validateConfig)
-	ret0, _ := ret[0].([]*workflow.ValidateTreeInfo)
+	ret0, _ := ret[0].([]*workflow0.ValidateTreeInfo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -467,7 +470,7 @@ func (mr *MockServiceMockRecorder) ValidateTree(ctx, id, validateConfig any) *go
 }
 
 // WithExecuteConfig mocks base method.
-func (m *MockService) WithExecuteConfig(cfg vo.ExecuteConfig) compose.Option {
+func (m *MockService) WithExecuteConfig(cfg workflow.ExecuteConfig) compose.Option {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WithExecuteConfig", cfg)
 	ret0, _ := ret[0].(compose.Option)
@@ -510,10 +513,10 @@ func (mr *MockServiceMockRecorder) WithResumeToolWorkflow(resumingEvent, resumeD
 }
 
 // WorkflowAsModelTool mocks base method.
-func (m *MockService) WorkflowAsModelTool(ctx context.Context, policies []*vo.GetPolicy) ([]workflow0.ToolFromWorkflow, error) {
+func (m *MockService) WorkflowAsModelTool(ctx context.Context, policies []*vo.GetPolicy) ([]workflow1.ToolFromWorkflow, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WorkflowAsModelTool", ctx, policies)
-	ret0, _ := ret[0].([]workflow0.ToolFromWorkflow)
+	ret0, _ := ret[0].([]workflow1.ToolFromWorkflow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -546,6 +549,20 @@ func NewMockRepository(ctrl *gomock.Controller) *MockRepository {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 	return m.recorder
+}
+
+// BatchCreateConnectorWorkflowVersion mocks base method.
+func (m *MockRepository) BatchCreateConnectorWorkflowVersion(ctx context.Context, appID, connectorID int64, workflowIDs []int64, version string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BatchCreateConnectorWorkflowVersion", ctx, appID, connectorID, workflowIDs, version)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BatchCreateConnectorWorkflowVersion indicates an expected call of BatchCreateConnectorWorkflowVersion.
+func (mr *MockRepositoryMockRecorder) BatchCreateConnectorWorkflowVersion(ctx, appID, connectorID, workflowIDs, version any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchCreateConnectorWorkflowVersion", reflect.TypeOf((*MockRepository)(nil).BatchCreateConnectorWorkflowVersion), ctx, appID, connectorID, workflowIDs, version)
 }
 
 // CancelAllRunningNodes mocks base method.
@@ -784,6 +801,20 @@ func (mr *MockRepositoryMockRecorder) GetFirstInterruptEvent(ctx, wfExeID any) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFirstInterruptEvent", reflect.TypeOf((*MockRepository)(nil).GetFirstInterruptEvent), ctx, wfExeID)
 }
 
+// GetKnowledgeRecallChatModel mocks base method.
+func (m *MockRepository) GetKnowledgeRecallChatModel() model.BaseChatModel {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetKnowledgeRecallChatModel")
+	ret0, _ := ret[0].(model.BaseChatModel)
+	return ret0
+}
+
+// GetKnowledgeRecallChatModel indicates an expected call of GetKnowledgeRecallChatModel.
+func (mr *MockRepositoryMockRecorder) GetKnowledgeRecallChatModel() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetKnowledgeRecallChatModel", reflect.TypeOf((*MockRepository)(nil).GetKnowledgeRecallChatModel))
+}
+
 // GetLatestVersion mocks base method.
 func (m *MockRepository) GetLatestVersion(ctx context.Context, id int64) (*vo.VersionInfo, error) {
 	m.ctrl.T.Helper()
@@ -934,6 +965,21 @@ func (m *MockRepository) GetWorkflowExecution(ctx context.Context, id int64) (*e
 func (mr *MockRepositoryMockRecorder) GetWorkflowExecution(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWorkflowExecution", reflect.TypeOf((*MockRepository)(nil).GetWorkflowExecution), ctx, id)
+}
+
+// IsApplicationConnectorWorkflowVersion mocks base method.
+func (m *MockRepository) IsApplicationConnectorWorkflowVersion(ctx context.Context, connectorID, workflowID int64, version string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsApplicationConnectorWorkflowVersion", ctx, connectorID, workflowID, version)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsApplicationConnectorWorkflowVersion indicates an expected call of IsApplicationConnectorWorkflowVersion.
+func (mr *MockRepositoryMockRecorder) IsApplicationConnectorWorkflowVersion(ctx, connectorID, workflowID, version any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsApplicationConnectorWorkflowVersion", reflect.TypeOf((*MockRepository)(nil).IsApplicationConnectorWorkflowVersion), ctx, connectorID, workflowID, version)
 }
 
 // ListInterruptEvents mocks base method.
@@ -1172,6 +1218,20 @@ func (mr *MockRepositoryMockRecorder) UpdateNodeExecution(ctx, execution any) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNodeExecution", reflect.TypeOf((*MockRepository)(nil).UpdateNodeExecution), ctx, execution)
 }
 
+// UpdateNodeExecutionStreaming mocks base method.
+func (m *MockRepository) UpdateNodeExecutionStreaming(ctx context.Context, execution *entity.NodeExecution) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateNodeExecutionStreaming", ctx, execution)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateNodeExecutionStreaming indicates an expected call of UpdateNodeExecutionStreaming.
+func (mr *MockRepositoryMockRecorder) UpdateNodeExecutionStreaming(ctx, execution any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNodeExecutionStreaming", reflect.TypeOf((*MockRepository)(nil).UpdateNodeExecutionStreaming), ctx, execution)
+}
+
 // UpdateWorkflowDraftTestRunSuccess mocks base method.
 func (m *MockRepository) UpdateWorkflowDraftTestRunSuccess(ctx context.Context, id int64) error {
 	m.ctrl.T.Helper()
@@ -1203,10 +1263,10 @@ func (mr *MockRepositoryMockRecorder) UpdateWorkflowExecution(ctx, execution, al
 }
 
 // WorkflowAsTool mocks base method.
-func (m *MockRepository) WorkflowAsTool(ctx context.Context, policy vo.GetPolicy, wfToolConfig vo.WorkflowToolConfig) (workflow0.ToolFromWorkflow, error) {
+func (m *MockRepository) WorkflowAsTool(ctx context.Context, policy vo.GetPolicy, wfToolConfig vo.WorkflowToolConfig) (workflow1.ToolFromWorkflow, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WorkflowAsTool", ctx, policy, wfToolConfig)
-	ret0, _ := ret[0].(workflow0.ToolFromWorkflow)
+	ret0, _ := ret[0].(workflow1.ToolFromWorkflow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

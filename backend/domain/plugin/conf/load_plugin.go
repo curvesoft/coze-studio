@@ -24,11 +24,12 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/mohae/deepcopy"
 	"golang.org/x/mod/semver"
 	"gopkg.in/yaml.v3"
 
 	model "github.com/coze-dev/coze-studio/backend/api/model/crossdomain/plugin"
-	common "github.com/coze-dev/coze-studio/backend/api/model/plugin_develop_common"
+	common "github.com/coze-dev/coze-studio/backend/api/model/plugin_develop/common"
 	"github.com/coze-dev/coze-studio/backend/domain/plugin/entity"
 	"github.com/coze-dev/coze-studio/backend/pkg/lang/ptr"
 	"github.com/coze-dev/coze-studio/backend/pkg/logs"
@@ -59,18 +60,26 @@ var (
 
 func GetToolProduct(toolID int64) (*ToolInfo, bool) {
 	ti, ok := toolProducts[toolID]
-	return ti, ok
+	if !ok {
+		return nil, false
+	}
+
+	ti_ := deepcopy.Copy(ti).(*ToolInfo)
+
+	return ti_, true
 }
 
 func MGetToolProducts(toolIDs []int64) []*ToolInfo {
 	tools := make([]*ToolInfo, 0, len(toolIDs))
 	for _, toolID := range toolIDs {
-		ti, ok := toolProducts[toolID]
+		ti, ok := GetToolProduct(toolID)
 		if !ok {
 			continue
 		}
+
 		tools = append(tools, ti)
 	}
+
 	return tools
 }
 

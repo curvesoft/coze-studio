@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import {
   DEFAULT_NODE_META_PATH,
   DEFAULT_OUTPUTS_PATH,
@@ -39,11 +39,11 @@ export const START_NODE_REGISTRY: WorkflowNodeRegistry<NodeTestMeta> = {
     copyDisable: true,
     headerReadonly: true,
     showTrigger: ({ projectId }) =>
-      // The community version does not support the project trigger feature, for future expansion
+      // will support soon
       (!!projectId || IS_BOT_OP) && !IS_OPEN_SOURCE,
     nodeMetaPath: DEFAULT_NODE_META_PATH,
     outputsPath: DEFAULT_OUTPUTS_PATH,
-    // 没有 input port
+    // No input port
     defaultPorts: [{ type: 'output' }],
     helpLink: '/open/docs/guides/start_end_node',
     test,

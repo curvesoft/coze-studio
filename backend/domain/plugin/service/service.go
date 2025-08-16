@@ -25,7 +25,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 
 	model "github.com/coze-dev/coze-studio/backend/api/model/crossdomain/plugin"
-	common "github.com/coze-dev/coze-studio/backend/api/model/plugin_develop_common"
+	common "github.com/coze-dev/coze-studio/backend/api/model/plugin_develop/common"
 	"github.com/coze-dev/coze-studio/backend/domain/plugin/entity"
 	"github.com/coze-dev/coze-studio/backend/pkg/errorx"
 	"github.com/coze-dev/coze-studio/backend/types/errno"
@@ -57,7 +57,7 @@ type PluginService interface {
 
 	// Draft Tool
 	MGetDraftTools(ctx context.Context, toolIDs []int64) (tools []*entity.ToolInfo, err error)
-	UpdateDraftTool(ctx context.Context, req *UpdateToolDraftRequest) (err error)
+	UpdateDraftTool(ctx context.Context, req *UpdateDraftToolRequest) (err error)
 	ConvertToOpenapi3Doc(ctx context.Context, req *ConvertToOpenapi3DocRequest) (resp *ConvertToOpenapi3DocResponse)
 	CreateDraftToolsWithCode(ctx context.Context, req *CreateDraftToolsWithCodeRequest) (resp *CreateDraftToolsWithCodeResponse, err error)
 	CheckPluginToolsDebugStatus(ctx context.Context, pluginID int64) (err error)
@@ -312,7 +312,7 @@ type PublishAPPPluginsResponse = model.PublishAPPPluginsResponse
 
 type MGetPluginLatestVersionResponse = model.MGetPluginLatestVersionResponse
 
-type UpdateToolDraftRequest struct {
+type UpdateDraftToolRequest struct {
 	PluginID     int64
 	ToolID       int64
 	Name         *string

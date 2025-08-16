@@ -28,7 +28,7 @@ import (
 	contract "github.com/coze-dev/coze-studio/backend/infra/contract/document/parser"
 )
 
-func parseJSON(config *contract.Config) parseFn {
+func ParseJSON(config *contract.Config) ParseFn {
 	return func(ctx context.Context, reader io.Reader, opts ...parser.Option) (docs []*schema.Document, err error) {
 		b, err := io.ReadAll(reader)
 		if err != nil {
@@ -41,7 +41,7 @@ func parseJSON(config *contract.Config) parseFn {
 		}
 
 		if len(rawSlices) == 0 {
-			return nil, fmt.Errorf("[parseJSON] json data is empty")
+			return nil, fmt.Errorf("[ParseJSON] json data is empty")
 		}
 
 		var header []string
@@ -51,7 +51,7 @@ func parseJSON(config *contract.Config) parseFn {
 			}
 		} else {
 			for k := range rawSlices[0] {
-				// init 取首个 json item 中 key 的随机顺序
+				// Init takes the random order of keys in the first json item
 				header = append(header, k)
 			}
 		}

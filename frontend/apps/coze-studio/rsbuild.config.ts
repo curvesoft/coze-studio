@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 import path from 'path';
 
 import { defineConfig } from '@coze-arch/rsbuild-config';
 import { GLOBAL_ENVS } from '@coze-arch/bot-env';
 
-const API_PROXY_TARGET = `http://localhost:${process.env.WEB_SERVER_PORT || 8888}/`;
+const API_PROXY_TARGET = `http://localhost:${
+  process.env.WEB_SERVER_PORT || 8888
+}/`;
 
 const mergedConfig = defineConfig({
   server: {
@@ -83,7 +85,7 @@ const mergedConfig = defineConfig({
   source: {
     define: {
       'process.env.IS_REACT18': JSON.stringify(true),
-      // arcosite editor sdk 内部使用
+      // Arcosite editor sdk internal use
       'process.env.ARCOSITE_SDK_REGION': JSON.stringify(
         GLOBAL_ENVS.IS_OVERSEA ? 'VA' : 'CN',
       ),
@@ -99,12 +101,10 @@ const mergedConfig = defineConfig({
     include: [
       path.resolve(__dirname, '../../packages'),
       path.resolve(__dirname, '../../infra/flags-devtool'),
-      // 以下几个包包含未降级的 ES 2022 语法（private methods）需要参与打包
+      // The following packages contain undegraded ES 2022 syntax (private methods) that need to be packaged
       /\/node_modules\/(marked|@dagrejs|@tanstack)\//,
     ],
     alias: {
-      // TODO: fixme late，开源之前需要干掉这个
-      '@slardar/web/client': '@slardar/web/cn',
       '@coze-arch/foundation-sdk': require.resolve(
         '@coze-foundation/foundation-sdk',
       ),

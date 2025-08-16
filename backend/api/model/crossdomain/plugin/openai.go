@@ -30,6 +30,7 @@ import (
 	"github.com/coze-dev/coze-studio/backend/pkg/lang/slices"
 	"github.com/coze-dev/coze-studio/backend/pkg/logs"
 	"github.com/coze-dev/coze-studio/backend/types/errno"
+
 	"github.com/cloudwego/eino/schema"
 )
 
@@ -64,10 +65,6 @@ func (ot Openapi3T) Validate(ctx context.Context) (err error) {
 	if err != nil {
 		return errorx.New(errno.ErrPluginInvalidOpenapi3Doc, errorx.KVf(errno.PluginMsgKey,
 			"invalid server url '%s'", serverURL))
-	}
-	if urlSchema.Scheme != "https" {
-		return errorx.New(errno.ErrPluginInvalidOpenapi3Doc, errorx.KV(errno.PluginMsgKey,
-			"server url must start with 'https://'"))
 	}
 	if urlSchema.Host == "" {
 		return errorx.New(errno.ErrPluginInvalidOpenapi3Doc, errorx.KVf(errno.PluginMsgKey,
@@ -184,6 +181,9 @@ func (op *Openapi3Operation) ToEinoSchemaParameterInfo(ctx context.Context) (map
 				if err != nil {
 					return nil, err
 				}
+				if subParam == nil {
+					continue
+				}
 
 				subParams[paramName] = subParam
 			}
@@ -264,7 +264,7 @@ func (op *Openapi3Operation) ToEinoSchemaParameterInfo(ctx context.Context) (map
 			result[paramName] = paramInfo
 		}
 
-		break // 只取一种 MIME
+		break // Take only one MIME.
 	}
 
 	return result, nil
@@ -378,8 +378,8 @@ func validateOpenapi3Responses(responses openapi3.Responses) (err error) {
 		return nil
 	}
 
-	// default status 不处理
-	// 只处理 '200' status
+	// Default status not processed
+	// Only process' 200 'status
 	if len(responses) != 1 {
 		if len(responses) != 2 {
 			return errorx.New(errno.ErrPluginInvalidOpenapi3Doc, errorx.KV(errno.PluginMsgKey,
