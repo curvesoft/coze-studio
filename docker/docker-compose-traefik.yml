@@ -393,6 +393,12 @@ services:
     networks:
       - coze-network
       - traefik
+    labels:
+        traefik.enable: "true"
+        traefik.http.routers.coze-web.rule: Host(`coze.dockserv.com`)
+        traefik.http.routers.coze-web.tls: "true"
+        traefik.http.routers.coze-web.tls.certresolver: letsencrypt
+        traefik.http.services.coze-web.loadbalancer.server.port: 80
 
 networks:
   coze-network:
